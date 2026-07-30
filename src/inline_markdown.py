@@ -1,6 +1,15 @@
 import re
 
+from enum import Enum
 from textnode import TextNode, TextType
+
+
+# Used in text_to_textnodes function
+DELIMITERS = {
+    TextType.BOLD: "**",
+    TextType.ITALIC: "_",
+    TextType.CODE: "`",
+}
 
 def split_nodes_delimiter(
         old_nodes: list[TextNode],  
@@ -56,7 +65,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
             new_node_text = temp_split[1]
         # Comme on split en fonction du nombre d'LINK, il reste forcément une chaine de caractères. Si elle n'est pas vide, on l'ajoute.
         if new_node_text != "":
-            new_nodes.append(TextNode(new_node_text), TextType.PLAIN)
+            new_nodes.append(TextNode(new_node_text, TextType.PLAIN))
     return new_nodes
 
 
@@ -86,4 +95,11 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
         if new_node_text != "":
             new_nodes.append(TextNode(new_node_text), TextType.PLAIN)
     return new_nodes
+
+def text_to_textnodes(text: str) -> list[TextNode]:
+    text_to_nodes = [TextNode(text, TextType.PLAIN)]
+    for delim in DELIMITERS:
+        text_to_nodes = split_nodes_delimiter(text_to_nodes, DELIMITERS[delim], delim)
+    text_to_nodes = split_nodes_link(split_nodes_image(text_to_nodes))
+    return text_to_nodes
 
