@@ -1,8 +1,11 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
+
+    ### In HTMLNode ###
+
     def test_to_html_props(self):
         node = HTMLNode(
             "div",
@@ -49,6 +52,8 @@ class TestHTMLNode(unittest.TestCase):
             "HTMLNode(tag=p, value=What a strange world, children=None, props={'class': 'primary'})",
         )
 
+    ### In LeafNode ###
+
     def test_leaf_to_html_p(self):
         node = LeafNode("p", "Hello, world!")
         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
@@ -64,6 +69,45 @@ class TestHTMLNode(unittest.TestCase):
         node = LeafNode(None, "Hello, world!")
         self.assertEqual(node.to_html(), "Hello, world!")
 
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    ### In ParentNode ###
+
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_to_html_multiple_children(self):
+        child1 = LeafNode("i", "Italic text")
+        child2 = LeafNode(None, "Normal text")
+        child3 = LeafNode("b", "Bold text")
+        parent_node = ParentNode("div", [child1, child2, child3])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><i>Italic text</i>Normal text<b>Bold text</b></div>"
+        )
 
 if __name__ == "__main__":
     unittest.main()
