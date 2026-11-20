@@ -1,6 +1,5 @@
 import re
 
-from enum import Enum
 from textnode import TextNode, TextType
 
 
