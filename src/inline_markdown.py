@@ -92,7 +92,7 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
             new_node_text = temp_split[1]
         # Comme on split en fonction du nombre de liens, il reste forcément une chaine de caractères. Si elle n'est pas vide, on l'ajoute.
         if new_node_text != "":
-            new_nodes.append(TextNode(new_node_text), TextType.PLAIN)
+            new_nodes.append(TextNode(new_node_text, TextType.PLAIN))
     return new_nodes
 
 def text_to_textnodes(text: str) -> list[TextNode]:
