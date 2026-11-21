@@ -13,8 +13,8 @@ def extract_title(markdown):
     return title
 
 
-def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+def generate_page(from_path, template_path, dest_path, basepath):
+    # print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r") as f:
         markdown = f.read()
@@ -28,6 +28,9 @@ def generate_page(from_path, template_path, dest_path):
 
     page_content = page_content.replace("{{ Title }}", title)
     page_content = page_content.replace("{{ Content }}", html)
+    # Adjustments to post the website on GitHub, basepath will be passed from the command line
+    page_content = page_content.replace('href="/', f'href="{basepath}')
+    page_content = page_content.replace('scr="/', f'src="{basepath}')
 
     folder_name = os.path.dirname(dest_path)
     if folder_name:
@@ -37,8 +40,8 @@ def generate_page(from_path, template_path, dest_path):
         f.write(page_content)
 
 
-def gen_page_recursive(origin_dir_path, template_path, dest_dir_path):
-    print(f"paths given : {origin_dir_path}, {template_path}, {dest_dir_path}")
+def gen_page_recursive(origin_dir_path, template_path, dest_dir_path, basepath):
+    # print(f"paths given : {origin_dir_path}, {template_path}, {dest_dir_path}")
 
     entries = os.listdir(origin_dir_path)
 
@@ -49,7 +52,7 @@ def gen_page_recursive(origin_dir_path, template_path, dest_dir_path):
         if os.path.isfile(origin_path) and origin_path.endswith(".md"):
             new_file_name = f"{entry.removesuffix(".md")}.html"
             destination_path = os.path.join(dest_dir_path, new_file_name)
-            generate_page(origin_path, template_path, destination_path)
+            generate_page(origin_path, template_path, destination_path, basepath)
         elif os.path.isdir(origin_path):
             destination_path = os.path.join(dest_dir_path, entry)
-            gen_page_recursive(origin_path, template_path, destination_path)
+            gen_page_recursive(origin_path, template_path, destination_path, basepath)
