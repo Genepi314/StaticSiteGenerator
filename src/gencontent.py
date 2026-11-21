@@ -30,7 +30,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
     page_content = page_content.replace("{{ Content }}", html)
     # Adjustments to post the website on GitHub, basepath will be passed from the command line
     page_content = page_content.replace('href="/', f'href="{basepath}')
-    page_content = page_content.replace('scr="/', f'src="{basepath}')
+    page_content = page_content.replace('src="/', f'src="{basepath}')
 
     folder_name = os.path.dirname(dest_path)
     if folder_name:
