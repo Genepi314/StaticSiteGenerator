@@ -1,1 +1,1 @@
-python3 src/main.py "/Genepi314/"
+python3 src/main.py "/StaticSiteGenerator/"
